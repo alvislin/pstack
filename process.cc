@@ -87,15 +87,17 @@ Process::processAUXV(const Reader &auxio)
             break;
         }
 
+        Elf::Addr hdr = aux.a_un.a_val;
         if  (verbose > 1) {
             switch (aux.a_type) {
-#define AUX_TYPE(name, value) case value: *debug << "aux entry: " << #name << std::endl; break;
+#define AUX_TYPE(name, value) case value: *debug << "aux entry: " << #name << ": " \
+               << hdr << std::hex << " / 0x" << hdr << std::dec << std::endl; \
+               break;
 #include "libpstack/elf/aux.h"
                 default: *debug << "unknown aux entry " << aux.a_type << std::endl;
 #undef AUX_TYPE
             }
         }
-        Elf::Addr hdr = aux.a_un.a_val;
         switch (aux.a_type) {
             case AT_ENTRY: {
                 // this provides a reference for relocating the executable when
